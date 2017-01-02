@@ -6,6 +6,7 @@ using UnityStandardAssets.CrossPlatformInput;
 public class PlayerBattleControl : MonoBehaviour {
 	public GameObject Redball;
 	public Transform GunPoint;
+	public float MaximumDistance = 1000f;
 
 	private Animator _selfAnimator;
 	private RaycastHit _hit;
@@ -32,7 +33,7 @@ public class PlayerBattleControl : MonoBehaviour {
 			Vector3 p1 = GunPoint.position;
 			float distanceToObstacle = 0;
 
-			if (Physics.SphereCast(_cameraRay, 0.1f, out _hit, float.MaxValue)) {
+			if (Physics.SphereCast(_cameraRay, 0.1f, out _hit, MaximumDistance)) {
 				Redball.transform.position = _hit.point;
 			}
 		}
@@ -54,7 +55,7 @@ public class PlayerBattleControl : MonoBehaviour {
 				_selfAnimator.SetLookAtWeight (1);
 
 				_selfAnimator.SetLookAtPosition (_cameraRay.GetPoint(10));
-				_selfAnimator.SetIKPosition(AvatarIKGoal.LeftHand, _cameraRay.GetPoint(10));
+				_selfAnimator.SetIKPosition(AvatarIKGoal.LeftHand, _cameraRay.GetPoint(MaximumDistance));
 
 			}
 
