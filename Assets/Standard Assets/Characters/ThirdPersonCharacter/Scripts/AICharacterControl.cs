@@ -10,8 +10,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public UnityEngine.AI.NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
         public ThirdPersonCharacter character { get; private set; } // the character we are controlling
         public Transform target;                                    // target to aim for
-
-
+        public Quaternion targetRotation;
+        public float strength = 0.5f;
+        public float str;
         private void Start()
         {
             // get the components on the object we need ( should not be null due to require component so no need to check )
@@ -31,8 +32,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (agent.remainingDistance > agent.stoppingDistance)
                 character.Move(agent.desiredVelocity, false, false);
             else
+            {
                 character.Move(Vector3.zero, false, false);
-             
+                targetRotation = Quaternion.LookRotation(target.position - transform.position);
+                str = Mathf.Min(strength * Time.deltaTime, 1);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, str);
+            }
         }
 
 
