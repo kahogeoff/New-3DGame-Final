@@ -18,8 +18,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public float str;
         public bool attacked = false;
         public float forward = 1;
-        public float runAwayTime = 0.0f;
+        public float runAwayTime = 2.0f;
 
+		private float _runAwayTimeCounter = 0.0f;
 		private Animator _selfAnimator;
 
         private void Start()
@@ -55,6 +56,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 						//close enough to attack player
 						this.SendMessage ("StartAttack");
 						this.SendMessage ("AttackPlayer");
+					} else {
+						this.SendMessage("StopAttack");
 					}
 				} else {
 					character.Move (Vector3.zero, false, false);
@@ -67,13 +70,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
             //calculate run away time if forward = -1
             if (forward == -1)
-                runAwayTime += Time.deltaTime;
+				_runAwayTimeCounter += Time.deltaTime;
 
             //stop runaway when runawaytime >= 2s
-            if (runAwayTime >= 2.0f)
+			if (_runAwayTimeCounter >= runAwayTime)
             {
                 forward = 1;
-                runAwayTime = 0.0f;
+				_runAwayTimeCounter = 0.0f;
             }
         }
 
@@ -91,7 +94,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 					_selfAnimator.SetBool ("SwingSword", false);
 					_selfAnimator.Play("Grounded");
                     forward = -1;
-                    runAwayTime = 0.0f;
+					_runAwayTimeCounter = 0.0f;
                 }
             }
 			UnsetAttacked ();

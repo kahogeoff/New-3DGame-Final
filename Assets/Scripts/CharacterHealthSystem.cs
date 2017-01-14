@@ -25,4 +25,21 @@ public class CharacterHealthSystem : MonoBehaviour {
 	void RestoreHealth(float amount){
 		CurrentHealth += amount;
 	}
+
+	void RestoreFullHealth(){
+		CurrentHealth = MaxHealth;
+	}
+
+	void InstantDeath(){
+		CurrentHealth = 0;
+	}
+
+	void IncreaseMaximumHealth(int amount){
+		MaxHealth = InitialMaxHealth + amount;
+		RestoreFullHealth ();
+	}
+
+	void ReturnToNormalHealth(){
+		MaxHealth = InitialMaxHealth;
+	}
 }
