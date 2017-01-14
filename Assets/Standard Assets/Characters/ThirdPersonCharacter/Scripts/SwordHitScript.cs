@@ -18,8 +18,8 @@ public class SwordHitScript : MonoBehaviour {
 		if (this.enabled) {
 			if (c.CompareTag (TagToCheck)) {
 				Debug.Log ("Hit: "+TagToCheck+"-"+ c.name);
-                AttackedEnemy = GameObject.Find(c.name).gameObject;
-                AttackedEnemy.GetComponent<UnityStandardAssets.Characters.ThirdPerson.AICharacterControl>().attacked = true;
+                AttackedEnemy = c.gameObject;
+                AttackedEnemy.SendMessage("SetAttacked");
             }
 		}
 	}
