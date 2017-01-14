@@ -3,7 +3,8 @@ using System.Collections;
 
 public class SwordHitScript : MonoBehaviour {
 	public string TagToCheck = "Enemy";
-    public GameObject AttackedEnemy;
+	public float HealthReducing = 1.0f;
+    public GameObject HittedObject;
     // Use this for initialization
     void Start () {
 	
@@ -17,10 +18,15 @@ public class SwordHitScript : MonoBehaviour {
 	void OnTriggerEnter(Collider c){
 		if (this.enabled) {
 			if (c.CompareTag (TagToCheck)) {
-				Debug.Log ("Hit: "+TagToCheck+"-"+ c.name);
-                AttackedEnemy = c.gameObject;
-                AttackedEnemy.SendMessage("SetAttacked");
+				Debug.Log ("Hit: "+TagToCheck+" - "+ c.name);
+                HittedObject = c.gameObject;
+				HittedObject.SendMessage("SetAttacked",SendMessageOptions.DontRequireReceiver);
+				HittedObject.SendMessage("ReduceHealth", HealthReducing, SendMessageOptions.DontRequireReceiver);
             }
 		}
+	}
+
+	void OnTriggerExit(Collider c){
+		HittedObject = null;
 	}
 }

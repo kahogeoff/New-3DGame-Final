@@ -28,6 +28,7 @@ public class PlayerRangeAttackControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Redball.gameObject.SetActive (false);
 		_selfAnimator = GetComponent<Animator> ();
 		Cursor.lockState = CursorLockMode.Locked;
 		_shootingCooldownCounter = ShootingCooldown;
@@ -47,6 +48,10 @@ public class PlayerRangeAttackControl : MonoBehaviour {
 
 		// In Aiming State
 		if(_selfAnimator.GetBool("Aiming")){
+			if(!Redball.gameObject.activeSelf){
+				Redball.gameObject.SetActive (true);
+			}
+
 			_cameraRay = new Ray(
 				Camera.main.transform.position, Camera.main.transform.forward
 			);
@@ -55,6 +60,12 @@ public class PlayerRangeAttackControl : MonoBehaviour {
 				Redball.position = _hit.point;
 			} else {
 				Redball.position = ShoulderPoint.position + tmp_direction * MaximumDistance;
+			}
+		}
+
+		if (!_selfAnimator.GetBool ("Aiming")) {
+			if(Redball.gameObject.activeSelf){
+				Redball.gameObject.SetActive (false);
 			}
 		}
 
@@ -80,12 +91,15 @@ public class PlayerRangeAttackControl : MonoBehaviour {
 			RangeWeapon.rotation = LeftHandPivot.rotation;
 		}
 
+		_shootingCooldownCounter += Time.deltaTime;
+	}
+
+	void FixedUpdate(){
 		if (_remainBullet <= 0 && !_reloading) {
 			StartCoroutine ("Reload");
 			_reloading = true;
 			_selfAnimator.SetBool ("Reloading", _reloading);
 		}
-		_shootingCooldownCounter += Time.deltaTime;
 	}
 
 	IEnumerator Reload(){
