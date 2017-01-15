@@ -11,6 +11,8 @@ public class EnemyGenerator : MonoBehaviour
     public int EnemyNumPerWave;
     public int EnemyNumNow;
     public float TimeCounter;
+    public bool PassChapter;
+
     private GameObject[] SpawnPointList;
     public int WaveCounter;
     private int SpawnPosNum;
@@ -26,6 +28,7 @@ public class EnemyGenerator : MonoBehaviour
         TimeCounter = 10.0f;
         firstWave = true;
         EnemyNumNow = GameObject.FindGameObjectsWithTag("Enemy").Length;
+        PassChapter = false;
         //GameObject.FindGameObjectsWithTag("Enemy").Length
     }
 
@@ -64,6 +67,7 @@ public class EnemyGenerator : MonoBehaviour
                 else
                 {
                     //pass successfully
+                    PassChapter = true;
                 }
             }
         }
@@ -89,7 +93,8 @@ public class EnemyGenerator : MonoBehaviour
 
             int k = Random.Range(0, SpawnPosNum - 1);
             tmp_Enemy.transform.position = SpawnPointList[k].transform.position;
-
+            tmp_Enemy.SetActive(false);
+            tmp_Enemy.SetActive(true);
             tmp_Enemy.SendMessage("SetTarget");
         }
 

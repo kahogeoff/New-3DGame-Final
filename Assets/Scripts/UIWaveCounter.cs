@@ -21,18 +21,29 @@ public class UIWaveCounter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_enemygenerator.EnemyNumNow > 0)
+        if (!_enemygenerator.PassChapter)
         {
-            TimeText.enabled = false;
-            CounterText.enabled = true;
-            CounterText.text = string.Format("Wave:{0}\nEnemy Num:{1}", _enemygenerator.WaveCounter, _enemygenerator.EnemyNumNow);
+            if (_enemygenerator.EnemyNumNow > 0)
+            {
+                TimeText.enabled = false;
+                CounterText.enabled = true;
+                CounterText.text = string.Format("Wave:{0}\nEnemy Num:{1}", _enemygenerator.WaveCounter, _enemygenerator.EnemyNumNow);
 
+            }
+            else
+            {
+                TimeText.enabled = true;
+                CounterText.enabled = false;
+                TimeText.text = string.Format("Next Wave Remain:{0}", (int)_enemygenerator.TimeCounter);
+
+            }
         }
-        else {
+        else
+        {
             TimeText.enabled = true;
             CounterText.enabled = false;
-            TimeText.text = string.Format("Next Wave Remain:{0}", (int)_enemygenerator.TimeCounter);
-
+            TimeText.text = string.Format("Chapter Clear");
         }
+
     }
 }
