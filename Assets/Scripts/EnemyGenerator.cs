@@ -16,7 +16,6 @@ public class EnemyGenerator : MonoBehaviour
     private GameObject[] SpawnPointList;
     public int WaveCounter;
     private int SpawnPosNum;
-    private GameObject tmp_Enemy;
     private bool firstWave;
 
     // Use this for initialization
@@ -77,6 +76,7 @@ public class EnemyGenerator : MonoBehaviour
 
     private void SpawnEnemy()
     {
+        GameObject tmp_Enemy =new GameObject();
         //Random.seed = System.Guid.NewGuid().GetHashCode();
         for (int i = 0; i < EnemyNumPerWave; i++)
         {

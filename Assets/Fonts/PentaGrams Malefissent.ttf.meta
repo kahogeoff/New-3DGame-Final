@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: f6e6f9b132642304fad5651a1198db4b
+timeCreated: 1484474645
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: PentaGram?s Malefissent
+  fontNames:
+  - PentaGram?s Malefissent
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

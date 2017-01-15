@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 using System.Collections;
-
+using UnityEngine.AI;
+using System.Collections.Generic;
 namespace UnityStandardAssets.Characters.ThirdPerson
 {
     [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
@@ -26,12 +27,23 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private void Start()
         {
             // get the components on the object we need ( should not be null due to require component so no need to check )
+
+            /*GameObject go = new GameObject("Target");
+            Vector3 sourcePostion = new Vector3(100, 20, 100);//The position you want to place your agent
+            NavMeshHit closestHit;
+            if (NavMesh.SamplePosition(sourcePostion, out closestHit, 500, 1))
+            {
+                go.transform.position = closestHit.position;
+                go.AddComponent<NavMeshAgent>();
+            }
+            */
             agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
             character = GetComponent<ThirdPersonCharacter>();
 
             agent.updateRotation = true;
             agent.updatePosition = true;
 
+            
 			_selfAnimator = GetComponent<Animator> ();
         }
 
@@ -39,8 +51,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private void Update()
         {
             if (target != null)
-                agent.SetDestination(forward * target.position);
-            //AI movement
+            {
+                if (forward > 0)
+                    agent.SetDestination(target.position);
+                else
+                {
+                    agent.SetDestination(GameObject.FindGameObjectWithTag("Spawn").GetComponent<Transform>().position);
+                }
+            }
+                //AI movement
 
 			if (agent.remainingDistance > agent.stoppingDistance) {
 				character.Move (agent.desiredVelocity, false, false);
@@ -65,9 +84,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 					this.SendMessage ("StartAttack");
 					this.SendMessage ("AttackPlayer");
 				}
-			} else if(float.IsInfinity(agent.remainingDistance) || float.IsNaN(agent.remainingDistance)){
-				character.Move (agent.desiredVelocity, false, false);
-				this.SendMessage ("StopAttack");
 			}
 
             //calculate run away time if forward = -1
@@ -91,11 +107,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 if (this.gameObject.name.Contains("Faster_new"))
                 {
                     //start run away
-					Debug.Log("Run away!");
+                    forward = -1;
+                    Debug.Log("Run away!");
 					_selfAnimator.StopPlayback ();
 					_selfAnimator.SetBool ("SwingSword", false);
 					_selfAnimator.Play("Grounded");
-                    forward = -1;
+                    
 					_runAwayTimeCounter = 0.0f;
                 }
             }
@@ -114,9 +131,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
         }
 
-        public void SetTarget(Transform target)
+        public void SetTarget()
         {
-            this.target = target;
+            target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+         
+           
         }
     }
 }

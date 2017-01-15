@@ -8,10 +8,12 @@ public class MenuManager : MonoBehaviour {
 	void Start () {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+        Time.timeScale = 1;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 }

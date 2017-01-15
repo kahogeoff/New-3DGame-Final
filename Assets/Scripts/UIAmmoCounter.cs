@@ -9,7 +9,7 @@ public class UIAmmoCounter : MonoBehaviour {
 	private PlayerRangeAttackControl _prac;
 	// Use this for initialization
 	void Start () {
-		_prac = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerRangeAttackControl> ();
+		_prac = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerRangeAttackControl> ();
 		CounterText.text = string.Format ("{0}/{1}", _prac.GetRemainBullet (), _prac.MaximumNumberOfBullet);
 	}
 	

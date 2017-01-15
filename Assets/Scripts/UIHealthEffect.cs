@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class UIHealthEffect : MonoBehaviour {
 	[SerializeField] private Text DeathMessage;
 	private Image _selfImage;
@@ -23,6 +23,11 @@ public class UIHealthEffect : MonoBehaviour {
 
 		if (_chs.CurrentHealth <= 0) {
 			DeathMessage.enabled = true;
+            Time.timeScale = 0;
+            if (Input.GetKey(KeyCode.Return))
+            {
+                SceneManager.LoadScene("demo_menu");
+            }
 		}
 	}
 }
