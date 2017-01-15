@@ -11,14 +11,18 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public UnityEngine.AI.NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
         public ThirdPersonCharacter character { get; private set; } // the character we are controlling
         public Transform target;
+
         // target to aim for
-        public Transform tmpTarget;
         public Quaternion targetRotation;
         public float strength = 0.5f;
         public float str;
         public bool attacked = false;
         public float forward = 1;
-        public float runAwayTime = 0.0f;
+        public float runAwayTime = 2.0f;
+
+		private float _runAwayTimeCounter = 0.0f;
+		private Animator _selfAnimator;
+
         private void Start()
         {
             // get the components on the object we need ( should not be null due to require component so no need to check )
@@ -27,6 +31,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
             agent.updateRotation = true;
             agent.updatePosition = true;
+
+			_selfAnimator = GetComponent<Animator> ();
         }
 
 
@@ -35,33 +41,44 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (target != null)
                 agent.SetDestination(forward * target.position);
             //AI movement
-            if (agent.remainingDistance > agent.stoppingDistance)
-            {
-                character.Move(agent.desiredVelocity, false, false);
-            }
-            else
-            {
 
-                character.Move(Vector3.zero, false, false);
-                targetRotation = Quaternion.LookRotation(target.position - transform.position);
-                str = Mathf.Min(strength * Time.deltaTime, 1);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, str);
-                //close enough to attack player
-                this.GetComponent<AIAttackSpace.AIAttackMeleeControl>().AttackEnable = true;
+			if (agent.remainingDistance > agent.stoppingDistance) {
+				character.Move (agent.desiredVelocity, false, false);
+				this.SendMessage ("StopAttack");
 
-            }
+			} else if (agent.remainingDistance <= agent.stoppingDistance) {
 
-
+				if (this.gameObject.name.Contains ("Faster_new")) {
+					if (!attacked) {
+						character.Move (Vector3.zero, false, false);
+						transform.LookAt (new Vector3 (target.position.x, transform.position.y, target.position.z));
+						//close enough to attack player
+						this.SendMessage ("StartAttack");
+						this.SendMessage ("AttackPlayer");
+					} else {
+						this.SendMessage ("StopAttack");
+					}
+				} else {
+					character.Move (Vector3.zero, false, false);
+					transform.LookAt (new Vector3 (target.position.x, transform.position.y, target.position.z));
+					//close enough to attack player
+					this.SendMessage ("StartAttack");
+					this.SendMessage ("AttackPlayer");
+				}
+			} else if(float.IsInfinity(agent.remainingDistance) || float.IsNaN(agent.remainingDistance)){
+				character.Move (agent.desiredVelocity, false, false);
+				this.SendMessage ("StopAttack");
+			}
 
             //calculate run away time if forward = -1
             if (forward == -1)
-                runAwayTime += Time.deltaTime;
+				_runAwayTimeCounter += Time.deltaTime;
 
             //stop runaway when runawaytime >= 2s
-            if (runAwayTime >= 2.0f)
+			if (_runAwayTimeCounter >= runAwayTime)
             {
                 forward = 1;
-                runAwayTime = 0.0f;
+				_runAwayTimeCounter = 0.0f;
             }
         }
 
@@ -70,28 +87,33 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             //AI is attack by player
             if (attacked)
             {
-                Debug.Log(this.gameObject.name + "be Hitten!");
+                Debug.Log(this.gameObject.name + " be Hitten!");
                 if (this.gameObject.name.Contains("Faster_new"))
                 {
-                    //start sun away
+                    //start run away
+					Debug.Log("Run away!");
+					_selfAnimator.StopPlayback ();
+					_selfAnimator.SetBool ("SwingSword", false);
+					_selfAnimator.Play("Grounded");
                     forward = -1;
-                    runAwayTime = 0.0f;
+					_runAwayTimeCounter = 0.0f;
                 }
-                UnsetAttacked();
             }
+			UnsetAttacked ();
         }
+
         public void SetAttacked()
         {
-
             attacked = true;
 
-
         }
+
         public void UnsetAttacked()
         {
             attacked = false;
 
         }
+
         public void SetTarget(Transform target)
         {
             this.target = target;

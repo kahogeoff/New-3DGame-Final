@@ -4,9 +4,11 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerMeleeAttackController : MonoBehaviour {
 	public TrailRenderer SlashingFX;
+	public AudioSource SlashingSFX;
 	public SwordHitScript HitScript;
 	public float ResetCooldown = 1.0f;
 	public float SlashCooldown = 0.2f;
+	public float AnimationMultiplier = 1.0f;
 
 	public float MaximumSwordStep = 2.0f;
 
@@ -22,6 +24,7 @@ public class PlayerMeleeAttackController : MonoBehaviour {
 		_swordStep = 1;
 		_reachResetCooldownCounter = 0.0f;
 		_reachSlashCooldownCounter = 0.0f;
+		_selfAnimator.SetFloat ("MeleeAttackSpeed", AnimationMultiplier);
 	}
 	
 	// Update is called once per frame
@@ -40,7 +43,7 @@ public class PlayerMeleeAttackController : MonoBehaviour {
 				transform.LookAt (new Vector3 (tmp_cameraRay.GetPoint (100).x, transform.position.y, tmp_cameraRay.GetPoint (100).z));
 
 				if (_reachSlashCooldownCounter >= SlashCooldown) {
-					Debug.Log ("Slash");
+					SlashingSFX.Play ();
 					_reachSlashCooldownCounter = 0;
 					_selfAnimator.SetBool ("SwingSword", true);
 					_selfAnimator.SetFloat ("SwordStep", _swordStep);
@@ -63,7 +66,6 @@ public class PlayerMeleeAttackController : MonoBehaviour {
 		_reachResetCooldownCounter += Time.deltaTime;
 		_reachSlashCooldownCounter += Time.deltaTime;
 		if (_reachResetCooldownCounter >= ResetCooldown) {
-			Debug.Log ("Reset");
 			_swordStep = 1;
 			_selfAnimator.SetFloat ("SwordStep", _swordStep);
 			_reachResetCooldownCounter = 0;
