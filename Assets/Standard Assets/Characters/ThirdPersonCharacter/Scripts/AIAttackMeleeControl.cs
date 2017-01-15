@@ -6,7 +6,8 @@ namespace AIAttackSpace
 {
     public class AIAttackMeleeControl : MonoBehaviour
     {
-        public TrailRenderer SlashingFX;
+		public TrailRenderer SlashingFX;
+		public AudioSource SlashingSFX;
         public SwordHitScript HitScript;
         public float ResetCooldown = 1.0f;
         public float SlashCooldown = 0.2f;
@@ -37,13 +38,13 @@ namespace AIAttackSpace
         {
             if (_selfAnimator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
             {
-                //SlashingFX.enabled = false;
+                SlashingFX.enabled = false;
                 HitScript.enabled = false;
             }
 
             if (_selfAnimator.GetCurrentAnimatorStateInfo(0).IsName("MeleeAttack"))
             {
-				//SlashingFX.enabled = true;
+				SlashingFX.enabled = true;
 				HitScript.enabled = true;
 
 				_selfAnimator.SetBool ("SwingSword", false);
@@ -56,7 +57,7 @@ namespace AIAttackSpace
 				_swordStep = 0;
                 _selfAnimator.SetFloat("SwordStep", _swordStep);
                 _reachResetCooldownCounter = 0;
-                //AttackEnable = false;
+
             }
         }
 
@@ -65,18 +66,16 @@ namespace AIAttackSpace
 
 		void AttackPlayer(){
 			if (!ShouldAttack) {
-				Debug.Log ("Should not attack.");
 				return;
 			}
 
 			if (_selfAnimator.GetCurrentAnimatorStateInfo (0).IsName ("Grounded")) {
-				Debug.Log ("Cooling Down");
 				_reachResetCooldownCounter = 0;
-				//SlashingFX.enabled = true;
+				SlashingFX.enabled = true;
 				HitScript.enabled = true;
 
 				if (_reachSlashCooldownCounter >= SlashCooldown) {
-					Debug.Log ("Slash");
+					SlashingSFX.Play ();
 					_reachSlashCooldownCounter = 0;
 					_selfAnimator.SetBool ("SwingSword", true);
 					_selfAnimator.SetFloat ("SwordStep", _swordStep);

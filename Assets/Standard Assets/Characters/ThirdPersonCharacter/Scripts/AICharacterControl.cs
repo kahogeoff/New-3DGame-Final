@@ -42,12 +42,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 agent.SetDestination(forward * target.position);
             //AI movement
 
-			if (agent.remainingDistance > agent.stoppingDistance)
-            {
-                character.Move(agent.desiredVelocity, false, false);
-				this.SendMessage("StopAttack");
+			if (agent.remainingDistance > agent.stoppingDistance) {
+				character.Move (agent.desiredVelocity, false, false);
+				this.SendMessage ("StopAttack");
 
-			}else if (agent.remainingDistance <= agent.stoppingDistance) {
+			} else if (agent.remainingDistance <= agent.stoppingDistance) {
 
 				if (this.gameObject.name.Contains ("Faster_new")) {
 					if (!attacked) {
@@ -57,7 +56,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 						this.SendMessage ("StartAttack");
 						this.SendMessage ("AttackPlayer");
 					} else {
-						this.SendMessage("StopAttack");
+						this.SendMessage ("StopAttack");
 					}
 				} else {
 					character.Move (Vector3.zero, false, false);
@@ -66,7 +65,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 					this.SendMessage ("StartAttack");
 					this.SendMessage ("AttackPlayer");
 				}
-            }
+			} else if(float.IsInfinity(agent.remainingDistance) || float.IsNaN(agent.remainingDistance)){
+				character.Move (agent.desiredVelocity, false, false);
+				this.SendMessage ("StopAttack");
+			}
 
             //calculate run away time if forward = -1
             if (forward == -1)
