@@ -3,6 +3,14 @@ New version of 2016 NCTU course "3D Game Programming" final project. It should b
 
 Turn out it become a 3rd-Person Action Game.
 
+## Control
+
+- Move: WASD
+- Camera: Mouse movement
+- Melee attack: Mouse left button click
+- Aim: Mouse right button hold
+- Shoot: Mouse left button click (When Aimming)
+
 ## TO-DO
 
 - [x] Weapon System
